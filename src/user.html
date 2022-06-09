@@ -8,6 +8,7 @@
     <style>
       .containerFlex {
         display: flex;
+        justify-content: space-around;
       }
       #publisher {
         width: 500px;
@@ -15,15 +16,16 @@
         object-fit: contain;
       }
       #subscriber {
-        width: 500px;
+        width: 800px;
         height: 500px;
-        object-fit: contain;
+        /* object-fit: contain; */
+        background-color: blue;
       }
     </style>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="index.css" rel="stylesheet" type="text/css" />
+    <!-- <link href="index.css" rel="stylesheet" type="text/css" /> -->
     <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
 
     <!-- <script src="index.js"></script> -->
@@ -31,24 +33,25 @@
     <title>Document</title>
   </head>
   <body>
+    <div><h1>Guest View</h1></div>
     <div class="containerFlex">
       <div id="publisher"></div>
 
       <div id="subscriber"></div>
     </div>
     <script>
-      //   let SAMPLE_SERVER_BASE_URL = 'localhost:3000';
-      let roomName = window.location.pathname.split('/')[1];
-      // var apiKey;
-      // var sessionId;
-      // var token;
+      let SAMPLE_SERVER_BASE_URL = 'http://localhost:3000';
+      const roomName = 'test';
+      let apiKey;
+      let sessionId;
+      let token;
 
-      const apiKey = '47396501';
-      const sessionId =
-        '1_MX40NzM5NjUwMX5-MTY1NDYwODc1NTExMn5xUkN3cUlxNjBrMXFuMkJnVTV5V1V4cy9-fg';
+      //   const apiKey = '47396501';
+      //   const sessionId =
+      //     '1_MX40NzM5NjUwMX5-MTY1NDYwODc1NTExMn5xUkN3cUlxNjBrMXFuMkJnVTV5V1V4cy9-fg';
 
-      const token =
-        'T1==cGFydG5lcl9pZD00NzM5NjUwMSZzaWc9Nzc2MzczNWE0MzlmOTMwZDY3ZTJkMzgyODFhNDA5MzM5ZmFiZGI4MDpzZXNzaW9uX2lkPTFfTVg0ME56TTVOalV3TVg1LU1UWTFORFl3T0RjMU5URXhNbjV4VWtOM2NVbHhOakJyTVhGdU1rSm5WVFY1VjFWNGN5OS1mZyZjcmVhdGVfdGltZT0xNjU0NjA4NzY0Jm5vbmNlPTAuNTA0NzM5NzE4NjY2NzI5MyZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNjU3MjAwNzYzJmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9';
+      //   const token =
+      //     'T1==cGFydG5lcl9pZD00NzM5NjUwMSZzaWc9Nzc2MzczNWE0MzlmOTMwZDY3ZTJkMzgyODFhNDA5MzM5ZmFiZGI4MDpzZXNzaW9uX2lkPTFfTVg0ME56TTVOalV3TVg1LU1UWTFORFl3T0RjMU5URXhNbjV4VWtOM2NVbHhOakJyTVhGdU1rSm5WVFY1VjFWNGN5OS1mZyZjcmVhdGVfdGltZT0xNjU0NjA4NzY0Jm5vbmNlPTAuNTA0NzM5NzE4NjY2NzI5MyZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNjU3MjAwNzYzJmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9';
 
       function handleError(error) {
         if (error) {
@@ -64,7 +67,7 @@
           if (event.stream.name !== 'singlePublisher') {
             var subscriberOptions = {
               //   insertMode: 'replace',
-              width: '100%',
+              width: '700px',
               height: '100%',
             };
             session.subscribe(
@@ -76,23 +79,13 @@
           }
         });
 
-        session.on('sessionDisconnected', function sessionDisconnected(event) {
-          console.log('You were disconnected from the session.', event.reason);
-        });
-
-        // initialize the publisher
-        var publisherOptions = {
-          //   //   insertMode: 'replace',
-          //   width: '100%',
-          //   height: '100%',
-        };
         var publisher = OT.initPublisher(
           'publisher',
           {
             insertMode: 'replace',
+            publishVideo: false,
           },
-          { pubishVideo: false },
-          //   publisherOptions,
+
           handleError
         );
 
@@ -108,14 +101,9 @@
       }
 
       // See the config.js file.
-      if (apiKey && token && sessionId) {
-        // apiKey = API_KEY;
-        // sessionId = SESSION_ID;
-        // token = TOKEN;
-        initializeSession();
-      } else if (SAMPLE_SERVER_BASE_URL) {
+      if (SAMPLE_SERVER_BASE_URL) {
         // Make an Ajax request to get the OpenTok API key, session ID, and token from the server
-        fetch(SAMPLE_SERVER_BASE_URL + '/api/room/:roomName')
+        fetch(SAMPLE_SERVER_BASE_URL + `/api/room/${roomName}`)
           .then(function fetch(res) {
             return res.json();
           })
@@ -128,9 +116,7 @@
           })
           .catch(function catchErr(error) {
             handleError(error);
-            alert(
-              'Failed to get opentok sessionId and token. Make sure you have updated the config.js file.'
-            );
+            alert('Failed to get opentok sessionId and token.');
           });
       }
     </script>

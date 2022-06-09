@@ -27,6 +27,10 @@ app.use('/dist', express.static('dist'));
 app.use('/host', express.static(hostPath));
 
 app.get('/host', (req, res) => {
+  res.sendFile(__dirname + '/src/host.html');
+});
+
+app.get('/ec', (req, res) => {
   res.sendFile(__dirname + '/src/index.html');
 });
 
@@ -36,13 +40,8 @@ app.get('/user', (req, res) => {
 
 app.get('/favicon.ico', (req, res) => res.status(204));
 
-const sendSessionInfo = (res, session, role) => {
-  console.log('generating token for ' + role);
-
-  const token = opentok.generateToken(session.sessionId, {
-    data: `${role}`,
-    role: role === 'admin' ? 'moderator' : 'publisher',
-  });
+const sendSessionInfo = (res, session) => {
+  const token = opentok.generateToken(session.sessionId);
   res.json({
     apiKey,
     sessionId: session.sessionId,
@@ -51,11 +50,9 @@ const sendSessionInfo = (res, session, role) => {
 };
 
 app.get('/api/room/:roomName', (req, res) => {
-  const { role } = req.query;
-  console.log(role);
   const roomName = req.params.roomName;
   if (sessions[roomName]) {
-    return sendSessionInfo(res, sessions[roomName], role);
+    return sendSessionInfo(res, sessions[roomName]);
   } else {
     opentok.createSession({ mediaMode: 'routed' }, (err, session) => {
       if (err) {
@@ -63,7 +60,7 @@ app.get('/api/room/:roomName', (req, res) => {
         res.render('error', { error: err });
       } else {
         sessions[roomName] = session;
-        return sendSessionInfo(res, session, role);
+        return sendSessionInfo(res, session);
       }
     });
   }
