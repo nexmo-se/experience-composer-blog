@@ -41,6 +41,7 @@ body {
   grid-row: 2 / 3;
   /* margin-top: 100px; */
 }
+
 .subscriber {
   position: absolute;
   bottom: 0;

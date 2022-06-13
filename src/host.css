@@ -41,10 +41,14 @@ body {
   grid-row: 2 / 3;
   /* margin-top: 100px; */
 }
+.button {
+  width: 100px;
+  height: 30px;
+}
 .subscriber {
   grid-column: 2;
   grid-row: 3 / 4;
-  background-color: red;
+  /* background-color: red; */
   /* width: 80%; */
   /* width: 50%;
   height: 100%;  */

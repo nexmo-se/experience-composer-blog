@@ -1,26 +1,12 @@
-// replace these values with those generated in your Video API account
-
 const queryString = window.location.search;
-console.log(queryString);
-
-let SAMPLE_SERVER_BASE_URL = 'http://localhost:3000';
+let SAMPLE_SERVER_BASE_URL = 'https://310a-79-108-84-186.ngrok.io';
 const roomName = 'test';
 let apiKey;
 let sessionId;
 let token;
-
-// const apiKey = '47396501';
-// const sessionId =
-//   '1_MX40NzM5NjUwMX5-MTY1NDYwODc1NTExMn5xUkN3cUlxNjBrMXFuMkJnVTV5V1V4cy9-fg';
-// let token;
-// if (queryString === '?role=doctor') {
-//   token =
-//     'T1==cGFydG5lcl9pZD00NzM5NjUwMSZzaWc9Nzc2MzczNWE0MzlmOTMwZDY3ZTJkMzgyODFhNDA5MzM5ZmFiZGI4MDpzZXNzaW9uX2lkPTFfTVg0ME56TTVOalV3TVg1LU1UWTFORFl3T0RjMU5URXhNbjV4VWtOM2NVbHhOakJyTVhGdU1rSm5WVFY1VjFWNGN5OS1mZyZjcmVhdGVfdGltZT0xNjU0NjA4NzY0Jm5vbmNlPTAuNTA0NzM5NzE4NjY2NzI5MyZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNjU3MjAwNzYzJmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9';
-// } else {
-//   token =
-//     'T1==cGFydG5lcl9pZD00NzM5NjUwMSZzaWc9ZjJjYWU1ZTdhZTI3MTczYmM3ZDQxMTA2MTQ5MWM5Zjc3ZDQ4OWUwNTpzZXNzaW9uX2lkPTFfTVg0ME56TTVOalV3TVg1LU1UWTFORFl3T0RjMU5URXhNbjV4VWtOM2NVbHhOakJyTVhGdU1rSm5WVFY1VjFWNGN5OS1mZyZjcmVhdGVfdGltZT0xNjU0NjE5MDI2Jm5vbmNlPTAuMjU5ODMyOTkzOTIwMDgwOTcmcm9sZT1wdWJsaXNoZXImZXhwaXJlX3RpbWU9MTY1NTIyMzgyNCZjb25uZWN0aW9uX2RhdGE9ZXhwZXJpZW5jZV9jb21wb3NlciZpbml0aWFsX2xheW91dF9jbGFzc19saXN0PQ==';
-// }
 let session;
+let renderId;
+
 // Handling all of our errors here by alerting them
 function handleError(error) {
   if (error) {
@@ -29,22 +15,50 @@ function handleError(error) {
 }
 
 function isOriginalLayout() {
-  return queryString === '?role=doctor';
+  return queryString === '?role=host' && window.location.pathname === '/host';
 }
 
 function isExperienceComposer() {
-  return queryString === '?role=experience_composer';
+  return (
+    queryString === '?role=experience_composer' &&
+    window.location.pathname === '/ec'
+  );
 }
 
-//experience composer needs to get his own credentials rather than connection using thee ones
+function startExperienceComposer() {
+  fetch(`${SAMPLE_SERVER_BASE_URL}/render`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ sessionId, roomName }),
+  })
+    .then(function fetch(res) {
+      return res.json();
+    })
+    .then(function fetchJson(json) {
+      console.log(json);
+      renderId = json.id;
+    });
+}
 
-// (optional) add server code here
-// initializeSession();
+function stopExperienceComposer() {
+  fetch(`${SAMPLE_SERVER_BASE_URL}/render/stop/${renderId}`).then(
+    function fetch(res) {
+      // return res.json();
+      console.log('stopped experience composer');
+    }
+  );
+  // .then(function fetchJson(json) {
+  //   console.log(json);
+  //   renderId = json.id;
+  // });
+}
 
-// See the config.js file.
 if (SAMPLE_SERVER_BASE_URL) {
   // Make an Ajax request to get the OpenTok API key, session ID, and token from the server
-  fetch(SAMPLE_SERVER_BASE_URL + `/api/room/${roomName}`)
+  fetch(`${SAMPLE_SERVER_BASE_URL}/api/room/${roomName}`)
     .then(function fetch(res) {
       return res.json();
     })
@@ -67,7 +81,7 @@ function subscribe(stream) {
     isExperienceComposer() ? 'publishero' : 'subscriber',
     {
       // insertMode: 'append',
-      width: '80%',
+      width: '100%',
       height: '100%',
     },
     handleError
@@ -80,9 +94,8 @@ function initializeSession() {
 
   // Subscribe to a newly created stream
   session.on('streamCreated', function (event) {
-    console.log(event);
-    console.log(isOriginalLayout(), event.stream.name);
-    // if (event.stream.name !== 'singlePublisher') {
+    console.log(event.stream);
+    console.log(isOriginalLayout());
 
     if (isOriginalLayout() && event.stream.name !== 'EC') {
       subscribe(event.stream);
@@ -92,21 +105,16 @@ function initializeSession() {
     }
   });
 
-  // Create a publisher
-
   // Connect to the session
   session.connect(token, function (error) {
     // If the connection is successful, initialize a publisher and publish to the session
     if (error) {
       handleError(error);
     } else {
-      if (queryString !== '?role=doctor') {
-        return;
-      } else {
+      if (isOriginalLayout()) {
         const publisher = OT.initPublisher(
           'publishero',
           {
-            //   insertMode: 'replace',
             width: '100%',
             height: '100%',
             name: 'singlePublisher',
