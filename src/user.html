@@ -62,7 +62,7 @@
 
         // Subscribe to a newly created stream
         session.on('streamCreated', function streamCreated(event) {
-          if (event.stream.name !== 'host') {
+          if (event.stream.name === 'EC') {
             var subscriberOptions = {
               //   insertMode: 'replace',
               width: '800px',

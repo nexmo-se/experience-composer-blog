@@ -14,7 +14,7 @@ function handleError(error) {
   }
 }
 
-function isOriginalLayout() {
+function isHost() {
   return queryString === '?role=host' && window.location.pathname === '/host';
 }
 
@@ -50,10 +50,6 @@ function stopExperienceComposer() {
       console.log('stopped experience composer');
     }
   );
-  // .then(function fetchJson(json) {
-  //   console.log(json);
-  //   renderId = json.id;
-  // });
 }
 
 if (SAMPLE_SERVER_BASE_URL) {
@@ -95,9 +91,9 @@ function initializeSession() {
   // Subscribe to a newly created stream
   session.on('streamCreated', function (event) {
     console.log(event.stream);
-    console.log(isOriginalLayout());
+    console.log(isHost());
 
-    if (isOriginalLayout() && event.stream.name !== 'EC') {
+    if (isHost() && event.stream.name !== 'EC') {
       subscribe(event.stream);
     }
     if (isExperienceComposer() && event.stream.name === 'host') {
@@ -111,7 +107,7 @@ function initializeSession() {
     if (error) {
       handleError(error);
     } else {
-      if (isOriginalLayout()) {
+      if (isHost()) {
         const publisher = OT.initPublisher(
           'publisher',
           {
