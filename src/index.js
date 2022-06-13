@@ -78,7 +78,7 @@ if (SAMPLE_SERVER_BASE_URL) {
 function subscribe(stream) {
   session.subscribe(
     stream,
-    isExperienceComposer() ? 'publishero' : 'subscriber',
+    isExperienceComposer() ? 'publisher' : 'subscriber',
     {
       // insertMode: 'append',
       width: '100%',
@@ -100,7 +100,7 @@ function initializeSession() {
     if (isOriginalLayout() && event.stream.name !== 'EC') {
       subscribe(event.stream);
     }
-    if (isExperienceComposer() && event.stream.name === 'singlePublisher') {
+    if (isExperienceComposer() && event.stream.name === 'host') {
       subscribe(event.stream);
     }
   });
@@ -113,11 +113,11 @@ function initializeSession() {
     } else {
       if (isOriginalLayout()) {
         const publisher = OT.initPublisher(
-          'publishero',
+          'publisher',
           {
             width: '100%',
             height: '100%',
-            name: 'singlePublisher',
+            name: 'host',
           },
           handleError
         );

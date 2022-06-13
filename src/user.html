@@ -18,8 +18,6 @@
       #subscriber {
         width: 800px;
         height: 500px;
-        /* object-fit: contain; */
-        background-color: blue;
       }
     </style>
     <meta charset="UTF-8" />
@@ -64,7 +62,7 @@
 
         // Subscribe to a newly created stream
         session.on('streamCreated', function streamCreated(event) {
-          if (event.stream.name !== 'singlePublisher') {
+          if (event.stream.name !== 'host') {
             var subscriberOptions = {
               //   insertMode: 'replace',
               width: '800px',

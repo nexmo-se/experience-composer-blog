@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
 const axios = require('axios');
 
 const apiKey = process.env.API_KEY;
@@ -22,13 +21,6 @@ if (!apiKey || !apiSecret) {
 const opentok = new OpenTok(apiKey, apiSecret);
 
 app.use(express.static(__dirname + '/src'));
-
-const participantPath = path.join(__dirname, './participant.html');
-app.use('/participant', express.static(participantPath));
-
-const hostPath = path.join(__dirname, './host.html');
-
-app.use('/host', express.static(hostPath));
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -37,7 +29,7 @@ app.get('/host', (req, res) => {
 });
 
 app.get('/ec', (req, res) => {
-  res.sendFile(__dirname + '/src/index.html');
+  res.sendFile(__dirname + '/src/ec.html');
 });
 
 app.get('/user', (req, res) => {
@@ -93,10 +85,14 @@ app.post('/render', async (req, res) => {
 app.get('/render/stop/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('trying to stop render ' + id);
-    const data = await deleteRender(id);
-    console.log(data);
-    res.status(200).send(data);
+    if (id) {
+      console.log('trying to stop render ' + id);
+      const data = await deleteRender(id);
+      console.log(data);
+      res.status(200).send(data);
+    } else {
+      res.status(500);
+    }
   } catch (e) {
     res.status(500).send({ message: e });
   }
