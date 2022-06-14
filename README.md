@@ -18,10 +18,16 @@ You need to setup some environment variables
 
 You can navigate to `localhost:3000/host?role=host` to go to the Host view. At that point you can start publishing the Experience composer stream by clicking on the `Start EC` button.
 
+![Host View](https://github.com/nexmo-se/experience-composer-blog/blob/main/images/host_View.png?raw=true)
+
 ## Guest
 
 You can navigate to `localhost:3000/user` to go to the Guest view. You will start publishing and once the host starts the experience composer you will see the host with the calendar, the overlay and the data table.
 
+![Guest View](https://github.com/nexmo-se/experience-composer-blog/blob/main/images/user_View.png?raw=true)
+
 ## Experience Composer
 
-The Experience Composer stream is added via API call from the server side. Once you issue the API request, the Experience Composer will navigate to your public accessible URL `public_url/ec?role=experience_composer` and will publish a stream with the content on the web applicaiton.
+The Experience Composer stream is added via API call from the server side. Once you issue the API request, the Experience Composer will navigate to your public accessible URL `public_url/ec?role=experience_composer` and will publish a stream with the content on the web application.
+
+![Experience Composer View](https://github.com/nexmo-se/experience-composer-blog/blob/main/images/Experience%20Composer.png?raw=true)
