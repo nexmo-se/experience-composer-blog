@@ -38,7 +38,7 @@
       <div id="subscriber"></div>
     </div>
     <script>
-      let SAMPLE_SERVER_BASE_URL = 'http://localhost:3000';
+      let SAMPLE_SERVER_BASE_URL = 'https://310a-79-108-84-186.ngrok.io';
       const roomName = 'test';
       let apiKey;
       let sessionId;
@@ -81,7 +81,8 @@
           'publisher',
           {
             insertMode: 'replace',
-            publishVideo: false,
+            // publishVideo: false,
+            publishAudio: true,
           },
 
           handleError
